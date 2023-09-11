@@ -59,7 +59,7 @@
             for (let i = 1; i <= 8; i++) {
                 const piece = document.createElement('div');
                 piece.className = 'puzzle-piece';
-                piece.style.backgroundImage = `url('template/${i}.jpg')`; // 从template文件夹读取图片
+                piece.style.backgroundImage = `url('template/${i}.png')`; // 从template文件夹读取图片
                 piece.dataset.index = i;
                 piece.addEventListener('click', () => movePiece(piece));
                 pieces.push(piece);
@@ -137,7 +137,7 @@
             if (emptyPiece) {
                 if (isBlankPieceInBottomRight()) {
                     // 如果空白拼图块在右下角，设置特殊背景
-                    emptyPiece.style.backgroundImage = `url('template/9.jpg')`; // 右下角的特殊背景
+                    emptyPiece.style.backgroundImage = `url('template/9.png')`; // 右下角的特殊背景
                 } else {
                     // 否则，恢复默认背景
                     emptyPiece.style.backgroundImage = '';
