@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOTHING HERE</title>
+    <style>
+        /* 样式可以根据需要自定义 */
+        body {
+            display: flex;
+            flex-direction: column; /* 垂直布局 */
+            align-items: center; /* 水平居中对齐 */
+            justify-content: center; /* 垂直居中对齐 */
+            height: 100vh;
+            margin: 0;
+        }
+
+        .puzzle-container {
+            width: 300px;
+            height: 300px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            grid-gap: 0;
+            /* 拼图之间没有间隔 */
+        }
+
+        .puzzle-piece {
+            width: 100%;
+            height: 100%;
+            background-size: 100% 100%;
+            /* 图像充满拼图块 */
+            cursor: pointer;
+        }
+
+        /* 空白拼图块样式 */
+        .empty-piece {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>๑乛◡乛๑</h1>
+
+    <!-- 游戏区域 -->
+    <div class="puzzle-container" id="puzzle-container"></div>
+
+
+
+    <script>
+        // 初始化游戏
+        let puzzleContainer = document.getElementById('puzzle-container');
+        let pieces = [];
+
+        // 创建初始的拼图块
+        function createInitialPuzzle() {
+            for (let i = 1; i <= 8; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'puzzle-piece';
+                piece.style.backgroundImage = `url('template/${i}.jpg')`; // 从template文件夹读取图片
+                piece.dataset.index = i;
+                piece.addEventListener('click', () => movePiece(piece));
+                pieces.push(piece);
+                puzzleContainer.appendChild(piece);
+            }
+
+            // 创建右下角空白拼图块
+            const emptyPiece = document.createElement('div');
+            emptyPiece.className = 'puzzle-piece empty-piece';
+            pieces.push(emptyPiece);
+            puzzleContainer.appendChild(emptyPiece);
+        }
+
+        // 移动拼图块
+        function movePiece(piece) {
+            const emptyPiece = pieces.find(p => p.classList.contains('empty-piece'));
+            const pieceIndex = pieces.indexOf(piece);
+            const emptyIndex = pieces.indexOf(emptyPiece);
+
+            if (isAdjacent(pieceIndex, emptyIndex)) {
+                pieces[pieceIndex] = emptyPiece;
+                pieces[emptyIndex] = piece;
+                updatePuzzle();
+            }
+
+            setEmptyPieceBackground()
+
+
+        }
+
+        // 检查是否相邻
+        function isAdjacent(index1, index2) {
+            const row1 = Math.floor(index1 / 3);
+            const col1 = index1 % 3;
+            const row2 = Math.floor(index2 / 3);
+            const col2 = index2 % 3;
+
+            return Math.abs(row1 - row2) + Math.abs(col1 - col2) === 1;
+        }
+
+        // 更新拼图
+        function updatePuzzle() {
+            puzzleContainer.innerHTML = '';
+            pieces.forEach(piece => puzzleContainer.appendChild(piece));
+        }
+
+        // 重新排列拼图块
+        function startNewGame() {
+            pieces.sort(() => Math.random() - 0.5);
+            updatePuzzle();
+        }
+
+
+        function isBlankPieceInBottomRight() {
+            const emptyPiece = pieces.find(p => p.classList.contains('empty-piece'));
+            if (!emptyPiece) {
+                return false; // 如果没有空白拼图块，返回false
+            }
+
+            const emptyIndex = pieces.indexOf(emptyPiece);
+            const numRows = 3; // 九宫格的行数
+            const numCols = 3; // 九宫格的列数
+
+            // 计算空白拼图块的行和列
+            const emptyRow = Math.floor(emptyIndex / numCols);
+            const emptyCol = emptyIndex % numCols;
+
+            // 检查是否在最后一行和最后一列
+            return emptyRow === numRows - 1 && emptyCol === numCols - 1;
+        }
+
+        // 设置空白拼图块的特殊背景
+        function setEmptyPieceBackground() {
+            const emptyPiece = pieces.find(p => p.classList.contains('empty-piece'));
+            if (emptyPiece) {
+                if (isBlankPieceInBottomRight()) {
+                    // 如果空白拼图块在右下角，设置特殊背景
+                    emptyPiece.style.backgroundImage = `url('template/9.jpg')`; // 右下角的特殊背景
+                } else {
+                    // 否则，恢复默认背景
+                    emptyPiece.style.backgroundImage = '';
+                    emptyPiece.style.backgroundColor = '#f0f0f0';
+                }
+            }
+        }
+
+        // 初始化游戏
+        createInitialPuzzle();
+        startNewGame();
+    </script>
+</body>
+
+</html>
